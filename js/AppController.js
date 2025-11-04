@@ -4,6 +4,7 @@
  */
 
 import { InAppBrowserDetector } from './InAppBrowserDetector.js';
+import { PlatformUtils } from './utils/platform.js';
 
 export class AppController {
   constructor() {
@@ -56,11 +57,28 @@ export class AppController {
     }
 
     try {
+      // Get device details
+      const os = PlatformUtils.getOS();
+      const osVersion = PlatformUtils.getOSVersion();
+      const browserVersion = PlatformUtils.getBrowserVersion();
+      
+      // Build device details string
+      const deviceDetails = [];
+      if (os !== 'Unknown') {
+        const osInfo = osVersion !== 'Unknown' ? `${os} ${osVersion}` : os;
+        deviceDetails.push(osInfo);
+      }
+      if (browserVersion !== 'Unknown') {
+        deviceDetails.push(`${this.browserName} ${browserVersion}`);
+      }
+      
+      const detailsString = deviceDetails.length > 0 ? ` - ${deviceDetails.join(', ')}` : '';
+      
       if (this.isInApp) {
-        statusElement.innerHTML = `<span style="color: #ff6b6b; font-weight: bold;">🔒 In-App Browser Detected (${this.browserName})</span>`;
+        statusElement.innerHTML = `<span style="color: #ff6b6b; font-weight: bold;">🔒 In-App Browser Detected (${this.browserName})${detailsString}</span>`;
         this.showInAppUI();
       } else {
-        statusElement.innerHTML = `<span style="color: #28a745; font-weight: bold;">🌐 Regular Browser (${this.browserName})</span>`;
+        statusElement.innerHTML = `<span style="color: #28a745; font-weight: bold;">🌐 Regular Browser (${this.browserName})${detailsString}</span>`;
         this.hideInAppUI();
       }
     } catch (error) {
