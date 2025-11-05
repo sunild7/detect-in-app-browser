@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example 1: ES Module Usage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .feature-card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #667eea;
+    }
+    .result {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    .warning {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    .copy-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+    .copy-btn:hover {
+      background: #5568d3;
+    }
+    .user-agent {
+      word-break: break-all;
+      font-size: 12px;
+    }
+    .diagnostics {
+      margin-top: 14px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Example 1: ES Module Usage</h1>
+  
+  <div class="feature-card">
+    <h2>🔧 Detection Information</h2>
+    <p><strong>Browser Detection:</strong> <span id="detection-status">Detecting...</span></p>
+    <p><strong>User Agent:</strong> <span id="user-agent" class="user-agent"></span> <button id="copy-ua-btn" class="copy-btn">Copy UA</button></p>
+
+    <div class="diagnostics">
+      <p><strong>outerWidth / innerWidth:</strong> <span id="ow">-</span> / <span id="iw">-</span></p>
+      <p><strong>outerHeight / innerHeight:</strong> <span id="oh">-</span> / <span id="ih">-</span></p>
+      <p><strong>navigator.share exists:</strong> <span id="share-exists">-</span></p>
+      <p><strong>display-mode: standalone:</strong> <span id="standalone">-</span></p>
+      <p><strong>document.referrer:</strong> <span id="doc-referrer" style="word-break: break-all;">-</span></p>
+    </div>
+  </div>
+
+  <div id="results"></div>
+
+  <script type="module">
+    // Import the library
+    import { InAppBrowserDetector, PlatformUtils } from '../../lib/index.js';
+
+    // Detect if in-app browser
+    const isInApp = InAppBrowserDetector.detectInAppBrowser();
+    const browserName = InAppBrowserDetector.getBrowserName();
+    
+    // Get platform information
+    const isMobile = PlatformUtils.isMobile();
+    const isAndroid = PlatformUtils.isAndroid();
+    const isIOS = PlatformUtils.isIOS();
+    const os = PlatformUtils.getOS();
+    const osVersion = PlatformUtils.getOSVersion();
+    const browserVersion = PlatformUtils.getBrowserVersion();
+
+    // Update detection status
+    const statusElement = document.getElementById('detection-status');
+    const deviceDetails = [];
+    if (os !== 'Unknown') {
+      const osInfo = osVersion !== 'Unknown' ? `${os} ${osVersion}` : os;
+      deviceDetails.push(osInfo);
+    }
+    if (browserVersion !== 'Unknown') {
+      deviceDetails.push(`${browserName} ${browserVersion}`);
+    }
+    const detailsString = deviceDetails.length > 0 ? ` - ${deviceDetails.join(', ')}` : '';
+    
+    if (isInApp) {
+      statusElement.innerHTML = `<span style="color: #ff6b6b; font-weight: bold;">🔒 In-App Browser Detected (${browserName})${detailsString}</span>`;
+    } else {
+      statusElement.innerHTML = `<span style="color: #28a745; font-weight: bold;">🌐 Regular Browser (${browserName})${detailsString}</span>`;
+    }
+
+    // Update user agent
+    const userAgentElement = document.getElementById('user-agent');
+    userAgentElement.textContent = navigator.userAgent;
+
+    // Update diagnostics
+    document.getElementById('ow').textContent = String(window.outerWidth);
+    document.getElementById('iw').textContent = String(window.innerWidth);
+    document.getElementById('oh').textContent = String(window.outerHeight);
+    document.getElementById('ih').textContent = String(window.innerHeight);
+    document.getElementById('share-exists').textContent = typeof navigator.share !== 'undefined' ? 'true' : 'false';
+    const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+    document.getElementById('standalone').textContent = isStandalone ? 'true' : 'false';
+    document.getElementById('doc-referrer').textContent = document.referrer || '';
+
+    // Copy UA button
+    document.getElementById('copy-ua-btn').addEventListener('click', async () => {
+      const userAgent = navigator.userAgent;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(userAgent);
+          const btn = document.getElementById('copy-ua-btn');
+          const originalText = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 2000);
+        } else {
+          // Fallback
+          const textArea = document.createElement('textarea');
+          textArea.value = userAgent;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-9999px';
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          const btn = document.getElementById('copy-ua-btn');
+          const originalText = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+
+    // Display additional results
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = `
+      <div class="result">
+        <h2>Additional Information</h2>
+        <p><strong>Device Type:</strong> ${isMobile ? 'Mobile' : 'Desktop'}</p>
+        <p><strong>Platform:</strong> ${isAndroid ? 'Android' : isIOS ? 'iOS' : 'Other'}</p>
+      </div>
+      
+      ${isInApp ? `
+        <div class="warning">
+          <h3>⚠️ In-App Browser Detected</h3>
+          <p>You are viewing this page in ${browserName}'s in-app browser.</p>
+          <p>Consider opening in your system browser for better experience.</p>
+        </div>
+      ` : ''}
+    `;
+  </script>
+</body>
+</html>

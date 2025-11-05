@@ -1,0 +1,42 @@
+{
+  "name": "detect-in-app-browser",
+  "version": "1.0.0",
+  "description": "A simple JavaScript library to detect in-app browsers (WebView) and differentiate them from regular browsers",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "type": "module",
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "in-app-browser",
+    "webview",
+    "detection",
+    "browser-detection",
+    "mobile",
+    "android",
+    "ios",
+    "gmail",
+    "facebook",
+    "instagram",
+    "twitter",
+    "custom-tabs",
+    "javascript"
+  ],
+  "author": "Sunil D. <7609064+sunils07@users.noreply.github.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sunild7/detect-in-app-browser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sunild7/detect-in-app-browser/issues"
+  },
+  "homepage": "https://github.com/sunild7/detect-in-app-browser#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
+

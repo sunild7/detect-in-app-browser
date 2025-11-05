@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example 4: Platform Information</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .feature-card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #667eea;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .info-item {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .info-label {
+      font-weight: bold;
+      color: #666;
+    }
+    .copy-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+    .copy-btn:hover {
+      background: #5568d3;
+    }
+    .user-agent {
+      word-break: break-all;
+      font-size: 12px;
+    }
+    .diagnostics {
+      margin-top: 14px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Example 4: Platform Information</h1>
+  <p>This example shows how to get detailed platform information.</p>
+  
+  <div class="feature-card">
+    <h2>🔧 Detection Information</h2>
+    <p><strong>Browser Detection:</strong> <span id="detection-status">Detecting...</span></p>
+    <p><strong>User Agent:</strong> <span id="user-agent" class="user-agent"></span> <button id="copy-ua-btn" class="copy-btn">Copy UA</button></p>
+
+    <div class="diagnostics">
+      <p><strong>outerWidth / innerWidth:</strong> <span id="ow">-</span> / <span id="iw">-</span></p>
+      <p><strong>outerHeight / innerHeight:</strong> <span id="oh">-</span> / <span id="ih">-</span></p>
+      <p><strong>navigator.share exists:</strong> <span id="share-exists">-</span></p>
+      <p><strong>display-mode: standalone:</strong> <span id="standalone">-</span></p>
+      <p><strong>document.referrer:</strong> <span id="doc-referrer" style="word-break: break-all;">-</span></p>
+    </div>
+  </div>
+
+  <div id="platform-info"></div>
+
+  <script type="module">
+    import { InAppBrowserDetector, PlatformUtils } from '../../lib/index.js';
+
+    // Get all platform information
+    const isInApp = InAppBrowserDetector.detectInAppBrowser();
+    const browserName = InAppBrowserDetector.getBrowserName();
+    const os = PlatformUtils.getOS();
+    const osVersion = PlatformUtils.getOSVersion();
+    const browserVersion = PlatformUtils.getBrowserVersion();
+
+    // Update detection status
+    const statusElement = document.getElementById('detection-status');
+    const deviceDetails = [];
+    if (os !== 'Unknown') {
+      const osInfo = osVersion !== 'Unknown' ? `${os} ${osVersion}` : os;
+      deviceDetails.push(osInfo);
+    }
+    if (browserVersion !== 'Unknown') {
+      deviceDetails.push(`${browserName} ${browserVersion}`);
+    }
+    const detailsString = deviceDetails.length > 0 ? ` - ${deviceDetails.join(', ')}` : '';
+    
+    if (isInApp) {
+      statusElement.innerHTML = `<span style="color: #ff6b6b; font-weight: bold;">🔒 In-App Browser Detected (${browserName})${detailsString}</span>`;
+    } else {
+      statusElement.innerHTML = `<span style="color: #28a745; font-weight: bold;">🌐 Regular Browser (${browserName})${detailsString}</span>`;
+    }
+
+    // Update user agent
+    const userAgentElement = document.getElementById('user-agent');
+    userAgentElement.textContent = navigator.userAgent;
+
+    // Update diagnostics
+    document.getElementById('ow').textContent = String(window.outerWidth);
+    document.getElementById('iw').textContent = String(window.innerWidth);
+    document.getElementById('oh').textContent = String(window.outerHeight);
+    document.getElementById('ih').textContent = String(window.innerHeight);
+    document.getElementById('share-exists').textContent = typeof navigator.share !== 'undefined' ? 'true' : 'false';
+    const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+    document.getElementById('standalone').textContent = isStandalone ? 'true' : 'false';
+    document.getElementById('doc-referrer').textContent = document.referrer || '';
+
+    // Copy UA button
+    document.getElementById('copy-ua-btn').addEventListener('click', async () => {
+      const userAgent = navigator.userAgent;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(userAgent);
+          const btn = document.getElementById('copy-ua-btn');
+          const originalText = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 2000);
+        } else {
+          const textArea = document.createElement('textarea');
+          textArea.value = userAgent;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-9999px';
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          const btn = document.getElementById('copy-ua-btn');
+          const originalText = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+
+    const platformInfo = {
+      'Browser': browserName,
+      'Browser Version': browserVersion,
+      'Operating System': os,
+      'OS Version': osVersion,
+      'Device Type': PlatformUtils.isMobile() ? 'Mobile' : 'Desktop',
+      'Is Android': PlatformUtils.isAndroid() ? 'Yes' : 'No',
+      'Is iOS': PlatformUtils.isIOS() ? 'Yes' : 'No',
+      'Is In-App Browser': isInApp ? 'Yes' : 'No',
+    };
+
+    const infoDiv = document.getElementById('platform-info');
+    let html = '<h2>Platform Information</h2><div class="info-grid">';
+    
+    for (const [label, value] of Object.entries(platformInfo)) {
+      html += `
+        <div class="info-item">
+          <div class="info-label">${label}:</div>
+          <div>${value}</div>
+        </div>
+      `;
+    }
+    
+    html += '</div>';
+    infoDiv.innerHTML = html;
+  </script>
+</body>
+</html>

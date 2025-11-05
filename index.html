@@ -13,7 +13,7 @@
     <div class="feature-card">
       <h2>🔧 Detection Information</h2>
       <p><strong>Browser Detection:</strong> <span id="detection-status">Detecting...</span></p>
-      <p><strong>User Agent:</strong> <span id="user-agent" style="word-break: break-all; font-size: 12px;"></span> <button id="copy-ua-btn" onclick="window.copyUserAgent()" style="margin-left: 10px; padding: 5px 10px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">Copy UA</button></p>
+      <p><strong>User Agent:</strong> <span id="user-agent" style="word-break: break-all; font-size: 12px;"></span> <button id="copy-ua-btn" style="margin-left: 10px; padding: 5px 10px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">Copy UA</button></p>
 
       <div style="margin-top: 14px; font-size: 12px; line-height: 1.6;">
         <p><strong>outerWidth / innerWidth:</strong> <span id="ow">-</span> / <span id="iw">-</span></p>
@@ -25,11 +25,126 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js"></script>
+  <script type="module">
+    // Import the library from lib/ directory
+    import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+
+    // Detect if in-app browser
+    const isInApp = InAppBrowserDetector.detectInAppBrowser();
+    const browserName = InAppBrowserDetector.getBrowserName();
+    
+    // Get platform information
+    const os = PlatformUtils.getOS();
+    const osVersion = PlatformUtils.getOSVersion();
+    const browserVersion = PlatformUtils.getBrowserVersion();
+
+    // Update detection status
+    const statusElement = document.getElementById('detection-status');
+    const deviceDetails = [];
+    if (os !== 'Unknown') {
+      const osInfo = osVersion !== 'Unknown' ? `${os} ${osVersion}` : os;
+      deviceDetails.push(osInfo);
+    }
+    if (browserVersion !== 'Unknown') {
+      deviceDetails.push(`${browserName} ${browserVersion}`);
+    }
+    const detailsString = deviceDetails.length > 0 ? ` - ${deviceDetails.join(', ')}` : '';
+    
+    if (isInApp) {
+      statusElement.innerHTML = `<span style="color: #ff6b6b; font-weight: bold;">🔒 In-App Browser Detected (${browserName})${detailsString}</span>`;
+      // Show warning banner (dismissible)
+      if (!document.querySelector('.in-app-warning')) {
+        const banner = document.createElement('div');
+        banner.className = 'in-app-warning';
+        banner.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <span>⚠️ You're viewing this in ${browserName}'s in-app browser.</span>
+            <button type="button" aria-label="Dismiss warning" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+              Dismiss
+            </button>
+          </div>
+        `;
+        const dismissBtn = banner.querySelector('button');
+        if (dismissBtn) {
+          dismissBtn.addEventListener('click', () => banner.remove());
+        }
+        document.body.appendChild(banner);
+      }
+    } else {
+      statusElement.innerHTML = `<span style="color: #28a745; font-weight: bold;">🌐 Regular Browser (${browserName})${detailsString}</span>`;
+      // Ensure banner is removed in regular browsers
+      const existingBanner = document.querySelector('.in-app-warning');
+      if (existingBanner) existingBanner.remove();
+    }
+
+    // Update user agent
+    const userAgentElement = document.getElementById('user-agent');
+    userAgentElement.textContent = navigator.userAgent;
+
+    // Update diagnostics
+    document.getElementById('ow').textContent = String(window.outerWidth);
+    document.getElementById('iw').textContent = String(window.innerWidth);
+    document.getElementById('oh').textContent = String(window.outerHeight);
+    document.getElementById('ih').textContent = String(window.innerHeight);
+    document.getElementById('share-exists').textContent = typeof navigator.share !== 'undefined' ? 'true' : 'false';
+    const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+    document.getElementById('standalone').textContent = isStandalone ? 'true' : 'false';
+    document.getElementById('doc-referrer').textContent = document.referrer || '';
+
+    // Copy UA button functionality
+    const copyBtn = document.getElementById('copy-ua-btn');
+    copyBtn.addEventListener('click', async () => {
+      const userAgent = navigator.userAgent;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(userAgent);
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.style.background = '#28a745';
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.style.background = '#667eea';
+          }, 2000);
+        } else {
+          // Fallback for older browsers
+          const textArea = document.createElement('textarea');
+          textArea.value = userAgent;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-9999px';
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.style.background = '#28a745';
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.style.background = '#667eea';
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy:', err);
+        // Last resort: show prompt
+        window.prompt('Copy User Agent:', userAgent);
+      }
+    });
+
+    // Global function for backwards compatibility
+    window.copyUserAgent = () => {
+      copyBtn.click();
+    };
+
+    // Global function for backwards compatibility
+    window.getCurrentPageUrl = () => {
+      return InAppBrowserDetector.getCurrentPageUrl();
+    };
+  </script>
+
   <script>
     // Fallback: Show error if modules fail to load
     window.addEventListener('error', (e) => {
-      if (e.filename && e.filename.includes('main.js')) {
+      if (e.filename && e.filename.includes('lib/index.js')) {
         const statusElement = document.getElementById('detection-status');
         if (statusElement && statusElement.textContent === 'Detecting...') {
           statusElement.innerHTML = '<span style="color: #ff6b6b;">❌ Module loading failed. Check console for errors.</span>';
@@ -42,12 +157,7 @@
       const statusElement = document.getElementById('detection-status');
       if (statusElement && statusElement.textContent === 'Detecting...') {
         console.warn('Detection still showing "Detecting..." - module may not have loaded');
-        if (window.appController) {
-          console.log('AppController exists, retrying detection...');
-          window.appController.detectBrowser();
-        } else {
-          console.error('AppController not found');
-        }
+        statusElement.innerHTML = '<span style="color: #ff6b6b;">❌ Detection failed. Please check the console.</span>';
       }
     }, 1000);
   </script>
