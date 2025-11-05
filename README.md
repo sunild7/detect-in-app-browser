@@ -12,11 +12,11 @@ npm install detect-in-app-browser
 
 ### Direct Download
 
-Copy the `lib/` directory into your project and import from it:
+Copy the `dist/` directory (compiled files) into your project and import from it:
 
 ```html
 <script type="module">
-  import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+  import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
   // ...
   
   // No CSS is required by the library. Styling of any banners/UI is up to your app.
@@ -29,7 +29,7 @@ Copy the `lib/` directory into your project and import from it:
 
 ```html
 <script type="module">
-  import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+  import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
   
   // Detect if in-app browser (no CSS required)
   if (InAppBrowserDetector.detectInAppBrowser()) {

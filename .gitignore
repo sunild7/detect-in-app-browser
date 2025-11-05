@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+*.log
+
+# Test files
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+

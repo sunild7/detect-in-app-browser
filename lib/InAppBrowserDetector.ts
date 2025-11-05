@@ -6,6 +6,8 @@
  * @license MIT
  */
 
+import type { BrowserName, BraveNavigator, ReactNativeWebViewWindow } from './types.js';
+
 export class InAppBrowserDetector {
   /**
    * Main detection method
@@ -14,21 +16,22 @@ export class InAppBrowserDetector {
    * @returns {boolean} True if in-app browser is detected, false otherwise
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * const isInApp = InAppBrowserDetector.detectInAppBrowser();
    * if (isInApp) {
    *   console.log('User is in an in-app browser');
    * }
    * ```
    */
-  static detectInAppBrowser() {
+  static detectInAppBrowser(): boolean {
     if (typeof navigator === 'undefined' || typeof window === 'undefined') {
       return false;
     }
 
     const userAgent = navigator.userAgent.toLowerCase();
     const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
-    const isBraveFeature = !!(navigator.brave && typeof navigator.brave.isBrave === 'function');
+    const braveNav = navigator as BraveNavigator;
+    const isBraveFeature = !!(braveNav.brave && typeof braveNav.brave.isBrave === 'function');
     const referrer = (typeof document !== 'undefined' && document.referrer ? document.referrer : '').toLowerCase();
 
     // First, check if it's a known regular browser (EXCLUDE these FIRST - not in-app browsers)
@@ -139,7 +142,7 @@ export class InAppBrowserDetector {
    * 
    * @returns {boolean} True if Gmail app browser is detected
    */
-  static detectGmailApp() {
+  static detectGmailApp(): boolean {
     if (typeof document === 'undefined' || typeof navigator === 'undefined') {
       return false;
     }
@@ -188,21 +191,24 @@ export class InAppBrowserDetector {
    * @param {string} userAgent - Lowercase user agent string
    * @returns {boolean} True if WebView is detected
    */
-  static detectWebView(userAgent) {
+  static detectWebView(userAgent: string): boolean {
     if (typeof window === 'undefined' || typeof navigator === 'undefined') {
       return false;
     }
 
+    const braveNav = navigator as BraveNavigator;
+    const webViewWindow = window as ReactNativeWebViewWindow;
+
     // Exclude known regular browsers
     if (userAgent.includes('duckduckgo') || userAgent.includes('ddg/')) return false;
     if (userAgent.includes('edg') || userAgent.includes('edge/')) return false;
-    if (userAgent.includes('brave') || (navigator.brave && typeof navigator.brave.isBrave === 'function')) return false;
+    if (userAgent.includes('brave') || (braveNav.brave && typeof braveNav.brave.isBrave === 'function')) return false;
     if (userAgent.includes('firefox')) return false;
     if (userAgent.includes('opera') || userAgent.includes('opr/')) return false;
     if (userAgent.includes('vivaldi')) return false;
     
     // WebView detection methods
-    if (window.ReactNativeWebView) return true;
+    if (webViewWindow.ReactNativeWebView) return true;
 
     // Check for WebView token patterns
     if (/\bwv\b/.test(userAgent)) return true;
@@ -221,7 +227,7 @@ export class InAppBrowserDetector {
           if (!userAgent.includes('ddg/') && 
               !userAgent.includes('duckduckgo') && 
               !userAgent.includes('brave') &&
-              !(navigator.brave && typeof navigator.brave.isBrave === 'function')) {
+              !(braveNav.brave && typeof braveNav.brave.isBrave === 'function')) {
             return true;
           }
         }
@@ -262,20 +268,21 @@ export class InAppBrowserDetector {
   /**
    * Get the browser name
    * 
-   * @returns {string} Browser name (e.g., 'Chrome', 'Safari', 'Facebook', 'Gmail', etc.)
+   * @returns {BrowserName} Browser name
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * const browserName = InAppBrowserDetector.getBrowserName();
    * console.log('Browser:', browserName);
    * ```
    */
-  static getBrowserName() {
+  static getBrowserName(): BrowserName {
     if (typeof navigator === 'undefined') {
       return 'Unknown Browser';
     }
 
     const userAgent = navigator.userAgent.toLowerCase();
+    const braveNav = navigator as BraveNavigator;
 
     // Check for in-app browsers FIRST
     if (/gsa\//i.test(userAgent)) return 'Google App';
@@ -293,7 +300,7 @@ export class InAppBrowserDetector {
     // Check for regular browsers
     if (userAgent.includes('edg') || userAgent.includes('edge/')) return 'Edge';
     if (userAgent.includes('duckduckgo') || userAgent.includes('ddg/')) return 'DuckDuckGo';
-    if (userAgent.includes('brave') || (navigator.brave && typeof navigator.brave.isBrave === 'function')) return 'Brave';
+    if (userAgent.includes('brave') || (braveNav.brave && typeof braveNav.brave.isBrave === 'function')) return 'Brave';
     if (userAgent.includes('crios')) return 'Chrome';
     if (userAgent.includes('chrome') && !userAgent.includes('wv')) return 'Chrome';
     if (userAgent.includes('firefox')) return 'Firefox';
@@ -312,7 +319,7 @@ export class InAppBrowserDetector {
    * 
    * @returns {string} Current page URL
    */
-  static getCurrentPageUrl() {
+  static getCurrentPageUrl(): string {
     if (typeof window === 'undefined') {
       return '';
     }

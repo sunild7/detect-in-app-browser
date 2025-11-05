@@ -8,7 +8,7 @@ Get started with `detect-in-app-browser` in 5 minutes!
 npm install detect-in-app-browser
 ```
 
-Or download/copy the `lib/` folder directly into your project.
+Or download/copy the `dist/` folder (compiled files) directly into your project.
 
 ## Step 2: Import
 
@@ -19,7 +19,7 @@ import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
 Or if using local files:
 
 ```javascript
-import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
 ```
 
 ## Step 3: Use
@@ -62,7 +62,7 @@ const osVersion = PlatformUtils.getOSVersion();
   <div id="status"></div>
 
   <script type="module">
-    import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+    import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
     
     // Detect in-app browser
     const isInApp = InAppBrowserDetector.detectInAppBrowser();

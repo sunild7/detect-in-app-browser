@@ -17,6 +17,9 @@ import { PlatformUtils } from './PlatformUtils.js';
 export { InAppBrowserDetector } from './InAppBrowserDetector.js';
 export { PlatformUtils } from './PlatformUtils.js';
 
+// Type exports
+export type { BrowserName, OSName, BraveNavigator, ReactNativeWebViewWindow } from './types.js';
+
 // Default export for convenience
 export default {
   InAppBrowserDetector,

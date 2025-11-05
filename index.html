@@ -30,7 +30,7 @@
 
   <script type="module">
     // Import the library from lib/ directory
-    import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+    import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
 
     // Detect if in-app browser
     const isInApp = InAppBrowserDetector.detectInAppBrowser();
@@ -149,7 +149,7 @@
   <script>
     // Fallback: Show error if modules fail to load
     window.addEventListener('error', (e) => {
-      if (e.filename && e.filename.includes('lib/index.js')) {
+      if (e.filename && e.filename.includes('dist/index.js')) {
         const statusElement = document.getElementById('detection-status');
         if (statusElement && statusElement.textContent === 'Detecting...') {
           statusElement.innerHTML = '<span style="color: #ff6b6b;">❌ Module loading failed. Check console for errors.</span>';

@@ -1,15 +1,22 @@
 {
   "name": "detect-in-app-browser",
   "version": "1.0.0",
-  "description": "A simple JavaScript library to detect in-app browsers (WebView) and differentiate them from regular browsers",
-  "main": "lib/index.js",
-  "module": "lib/index.js",
+  "description": "A simple TypeScript library to detect in-app browsers (WebView) and differentiate them from regular browsers",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "files": [
-    "lib",
+    "dist",
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
   "keywords": [
     "in-app-browser",
     "webview",
@@ -23,7 +30,7 @@
     "instagram",
     "twitter",
     "custom-tabs",
-    "javascript"
+    "typescript"
   ],
   "author": "Sunil D. <7609064+sunils07@users.noreply.github.com>",
   "license": "MIT",
@@ -35,8 +42,10 @@
     "url": "https://github.com/sunild7/detect-in-app-browser/issues"
   },
   "homepage": "https://github.com/sunild7/detect-in-app-browser#readme",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
   "engines": {
     "node": ">=16.0.0"
   }
 }
-

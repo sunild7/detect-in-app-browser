@@ -6,6 +6,8 @@
  * @license MIT
  */
 
+import type { OSName } from './types.js';
+
 export class PlatformUtils {
   /**
    * Check if the current device is Android
@@ -13,13 +15,13 @@ export class PlatformUtils {
    * @returns {boolean} True if Android device
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * if (PlatformUtils.isAndroid()) {
    *   console.log('Android device detected');
    * }
    * ```
    */
-  static isAndroid() {
+  static isAndroid(): boolean {
     if (typeof navigator === 'undefined') {
       return false;
     }
@@ -32,13 +34,13 @@ export class PlatformUtils {
    * @returns {boolean} True if iOS device
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * if (PlatformUtils.isIOS()) {
    *   console.log('iOS device detected');
    * }
    * ```
    */
-  static isIOS() {
+  static isIOS(): boolean {
     if (typeof navigator === 'undefined') {
       return false;
     }
@@ -51,13 +53,13 @@ export class PlatformUtils {
    * @returns {boolean} True if mobile device
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * if (PlatformUtils.isMobile()) {
    *   console.log('Mobile device');
    * }
    * ```
    */
-  static isMobile() {
+  static isMobile(): boolean {
     if (typeof navigator === 'undefined') {
       return false;
     }
@@ -69,22 +71,22 @@ export class PlatformUtils {
    * 
    * @returns {boolean} True if desktop device
    */
-  static isDesktop() {
+  static isDesktop(): boolean {
     return !this.isMobile();
   }
 
   /**
    * Get the operating system name
    * 
-   * @returns {string} Operating system name (e.g., 'Android', 'iOS', 'Windows', 'macOS', etc.)
+   * @returns {OSName} Operating system name
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * const os = PlatformUtils.getOS();
    * console.log('Operating System:', os);
    * ```
    */
-  static getOS() {
+  static getOS(): OSName {
     if (typeof navigator === 'undefined') {
       return 'Unknown';
     }
@@ -122,12 +124,12 @@ export class PlatformUtils {
    * @returns {string} OS version string or 'Unknown'
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * const osVersion = PlatformUtils.getOSVersion();
    * console.log('OS Version:', osVersion);
    * ```
    */
-  static getOSVersion() {
+  static getOSVersion(): string {
     if (typeof navigator === 'undefined') {
       return 'Unknown';
     }
@@ -144,9 +146,9 @@ export class PlatformUtils {
     
     // iOS version - try multiple patterns and return highest
     if (/iphone|ipad|ipod/i.test(userAgent)) {
-      const versions = [];
+      const versions: string[] = [];
       
-      const parseVersion = (versionStr) => {
+      const parseVersion = (versionStr: string | null | undefined): string | null => {
         if (!versionStr) return null;
         const version = versionStr.replace(/_/g, '.');
         if (version.match(/^\d+\.\d+(\.\d+)?$/)) {
@@ -233,12 +235,12 @@ export class PlatformUtils {
    * @returns {string} Browser version string or 'Unknown'
    * 
    * @example
-   * ```javascript
+   * ```typescript
    * const browserVersion = PlatformUtils.getBrowserVersion();
    * console.log('Browser Version:', browserVersion);
    * ```
    */
-  static getBrowserVersion() {
+  static getBrowserVersion(): string {
     if (typeof navigator === 'undefined') {
       return 'Unknown';
     }

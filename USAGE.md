@@ -18,11 +18,11 @@ import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
 
 ### Option 2: Direct Download
 
-1. Copy the `lib/` folder into your project
+1. Copy the `dist/` folder (compiled files) into your project
 2. Import directly from it:
 
 ```javascript
-import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
 ```
 
 ## Basic Usage
