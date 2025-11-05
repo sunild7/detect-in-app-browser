@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>In-App Browser Detection</title>
-  <link rel="stylesheet" href="css/styles.css">
+
 </head>
 
 <body>
@@ -13,7 +13,10 @@
     <div class="feature-card">
       <h2>🔧 Detection Information</h2>
       <p><strong>Browser Detection:</strong> <span id="detection-status">Detecting...</span></p>
-      <p><strong>User Agent:</strong> <span id="user-agent" style="word-break: break-all; font-size: 12px;"></span> <button id="copy-ua-btn" style="margin-left: 10px; padding: 5px 10px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">Copy UA</button></p>
+      <p><strong>User Agent:</strong> <span id="user-agent" style="word-break: break-all; font-size: 12px;"></span>
+        <button id="copy-ua-btn"
+          style="margin-left: 10px; padding: 5px 10px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">Copy
+          UA</button></p>
 
       <div style="margin-top: 14px; font-size: 12px; line-height: 1.6;">
         <p><strong>outerWidth / innerWidth:</strong> <span id="ow">-</span> / <span id="iw">-</span></p>
@@ -32,7 +35,7 @@
     // Detect if in-app browser
     const isInApp = InAppBrowserDetector.detectInAppBrowser();
     const browserName = InAppBrowserDetector.getBrowserName();
-    
+
     // Get platform information
     const os = PlatformUtils.getOS();
     const osVersion = PlatformUtils.getOSVersion();
@@ -49,13 +52,15 @@
       deviceDetails.push(`${browserName} ${browserVersion}`);
     }
     const detailsString = deviceDetails.length > 0 ? ` - ${deviceDetails.join(', ')}` : '';
-    
+
     if (isInApp) {
       statusElement.innerHTML = `<span style="color: #ff6b6b; font-weight: bold;">🔒 In-App Browser Detected (${browserName})${detailsString}</span>`;
       // Show warning banner (dismissible)
       if (!document.querySelector('.in-app-warning')) {
         const banner = document.createElement('div');
         banner.className = 'in-app-warning';
+        // Inline essential styles so it works without external CSS
+        banner.setAttribute('style', 'position:fixed;top:0;left:0;right:0;background:#ff6b6b;color:#fff;padding:15px 20px;font-size:14px;text-align:center;z-index:10000;border-bottom:1px solid #ff4757;box-shadow:0 2px 10px rgba(0,0,0,0.2)');
         banner.innerHTML = `
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
             <span>⚠️ You're viewing this in ${browserName}'s in-app browser.</span>

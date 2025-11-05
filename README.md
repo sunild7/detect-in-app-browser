@@ -12,7 +12,16 @@ npm install detect-in-app-browser
 
 ### Direct Download
 
-Download the library files from the `lib/` directory and include them in your project.
+Copy the `lib/` directory into your project and import from it:
+
+```html
+<script type="module">
+  import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
+  // ...
+  
+  // No CSS is required by the library. Styling of any banners/UI is up to your app.
+</script>
+```
 
 ## Quick Start
 
@@ -22,7 +31,7 @@ Download the library files from the `lib/` directory and include them in your pr
 <script type="module">
   import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
   
-  // Detect if in-app browser
+  // Detect if in-app browser (no CSS required)
   if (InAppBrowserDetector.detectInAppBrowser()) {
     console.log('In-app browser detected!');
   }
@@ -237,12 +246,19 @@ console.log('Platform Info:', info);
 
 ## Examples
 
-See the `examples/basic/` directory for more usage examples:
+See the `examples/basic/` directory for working examples (serve from project root):
 
 - `example1-es-module.html` - Basic ES module usage
 - `example2-simple-detection.html` - Simple detection with alerts
 - `example3-conditional-logic.html` - Conditional feature availability
 - `example4-platform-info.html` - Platform information display
+
+Run locally from the project root:
+
+```bash
+python3 -m http.server 8000
+# open e.g. http://localhost:8000/examples/basic/example1-es-module.html
+```
 
 ## Supported Browsers
 

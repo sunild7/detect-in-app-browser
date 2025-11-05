@@ -8,7 +8,7 @@ Get started with `detect-in-app-browser` in 5 minutes!
 npm install detect-in-app-browser
 ```
 
-Or download the `lib/` folder directly.
+Or download/copy the `lib/` folder directly into your project.
 
 ## Step 2: Import
 
@@ -47,12 +47,14 @@ const os = PlatformUtils.getOS();
 const osVersion = PlatformUtils.getOSVersion();
 ```
 
-## Complete Example
+## Complete Example (no CSS required)
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My App</title>
 </head>
 <body>
@@ -94,6 +96,14 @@ const osVersion = PlatformUtils.getOSVersion();
 ## That's It!
 
 You're ready to use the library. Check out the [examples](./examples/basic/) for more advanced usage.
+
+To run the examples locally from the project root:
+
+```bash
+python3 -m http.server 8000
+# then open, for example:
+# http://localhost:8000/examples/basic/example1-es-module.html
+```
 
 ## Next Steps
 

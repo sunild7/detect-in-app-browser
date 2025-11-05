@@ -18,9 +18,8 @@ import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
 
 ### Option 2: Direct Download
 
-1. Download the `lib/` folder from the repository
-2. Copy it to your project
-3. Import directly:
+1. Copy the `lib/` folder into your project
+2. Import directly from it:
 
 ```javascript
 import { InAppBrowserDetector, PlatformUtils } from './lib/index.js';
@@ -70,7 +69,7 @@ const browserVersion = PlatformUtils.getBrowserVersion();
 
 ## Real-World Examples
 
-### Example 1: Show Warning Banner
+### Example 1: Show Warning Banner (no CSS required)
 
 ```html
 <!DOCTYPE html>
@@ -79,9 +78,8 @@ const browserVersion = PlatformUtils.getBrowserVersion();
   <title>My App</title>
 </head>
 <body>
-  <div id="warning-banner" style="display: none;">
-    ⚠️ You're viewing this in an in-app browser. 
-    Please open in your system browser for the best experience.
+  <div id="warning-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#ff6b6b;color:#fff;padding:12px 16px;font:14px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;z-index:10000;">
+    ⚠️ You're viewing this in an in-app browser. Please open in your system browser for the best experience.
   </div>
 
   <script type="module">
