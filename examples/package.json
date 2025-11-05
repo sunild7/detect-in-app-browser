@@ -1,0 +1,14 @@
+{
+  "name": "detect-in-app-browser-examples",
+  "version": "1.0.0",
+  "description": "Examples for detect-in-app-browser package",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
+

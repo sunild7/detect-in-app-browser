@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="In-App Browser Detection Demo - Test if your browser is detected as an in-app browser">
+  <title>In-App Browser Detection Demo</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <div class="content">
+    <div class="feature-card">
+      <h1>🔧 In-App Browser Detection</h1>
+      <p class="subtitle">This demo shows how to use the <code>detect-in-app-browser</code> package</p>
+      
+      <div class="detection-section">
+        <h2>Detection Status</h2>
+        <p>
+          <strong>Browser Detection:</strong> 
+          <span id="detection-status" class="status-text">Detecting...</span>
+        </p>
+      </div>
+
+      <div class="detection-section">
+        <h2>User Agent</h2>
+        <div class="user-agent-container">
+          <span id="user-agent" class="user-agent-text"></span>
+          <button 
+            id="copy-ua-btn" 
+            type="button"
+            class="copy-btn"
+            aria-label="Copy user agent to clipboard"
+            title="Copy user agent">
+            Copy UA
+          </button>
+        </div>
+      </div>
+
+      <div class="detection-section">
+        <h2>Diagnostic Information</h2>
+        <div class="diagnostics-grid">
+          <div class="diagnostic-item">
+            <strong>outerWidth / innerWidth:</strong>
+            <span id="ow">-</span> / <span id="iw">-</span>
+          </div>
+          <div class="diagnostic-item">
+            <strong>outerHeight / innerHeight:</strong>
+            <span id="oh">-</span> / <span id="ih">-</span>
+          </div>
+          <div class="diagnostic-item">
+            <strong>navigator.share exists:</strong>
+            <span id="share-exists">-</span>
+          </div>
+          <div class="diagnostic-item">
+            <strong>display-mode: standalone:</strong>
+            <span id="standalone">-</span>
+          </div>
+          <div class="diagnostic-item full-width">
+            <strong>document.referrer:</strong>
+            <span id="doc-referrer" class="referrer-text">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h2>📚 How to Use</h2>
+        <p>This example demonstrates:</p>
+        <ul>
+          <li>✅ Detecting in-app browsers vs regular browsers</li>
+          <li>✅ Getting browser name and version</li>
+          <li>✅ Getting platform information (OS, version)</li>
+          <li>✅ Displaying diagnostic information</li>
+          <li>✅ Showing warning banners for in-app browsers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js-compiled/main.js"></script>
+  <script>
+    // Fallback: Show error if modules fail to load
+    window.addEventListener('error', (e) => {
+      if (e.filename && e.filename.includes('main.js')) {
+        const statusElement = document.getElementById('detection-status');
+        if (statusElement && statusElement.textContent === 'Detecting...') {
+          statusElement.innerHTML = '<span style="color: #ff6b6b;">❌ Module loading failed. Check console for errors.</span>';
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

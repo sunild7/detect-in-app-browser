@@ -1,0 +1,33 @@
+# Source files
+src/
+tsconfig.json
+
+# Demo files
+examples/
+
+# Development files
+node_modules/
+.git/
+.gitignore
+.DS_Store
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test files
+test/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Build files (keep dist, but ignore source maps)
+*.map
+
+# Documentation (will include README.md manually)
+# README.md
+
