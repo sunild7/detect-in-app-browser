@@ -79,7 +79,7 @@
   <div id="alert"></div>
 
   <script type="module">
-    import { InAppBrowserDetector, PlatformUtils } from '../../dist/index.js';
+    import { InAppBrowserDetector, PlatformUtils, BrowserOpener } from '../../dist/index.js';
 
     // Simple detection
     const isInApp = InAppBrowserDetector.detectInAppBrowser();
@@ -157,11 +157,51 @@
     if (isInApp) {
       const alertDiv = document.getElementById('alert');
       alertDiv.className = 'alert alert-warning';
+      
+      const isChromeAvailable = BrowserOpener.isChromeAvailable();
+      const isSafariAvailable = BrowserOpener.isSafariAvailable();
+      
+      let buttonsHtml = '';
+      if (isChromeAvailable || isSafariAvailable) {
+        buttonsHtml = '<div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">';
+        if (isChromeAvailable) {
+          buttonsHtml += `
+            <button type="button" class="open-chrome-btn" style="background: #4285f4; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;">
+              🌐 Open in Chrome
+            </button>
+          `;
+        }
+        if (isSafariAvailable) {
+          buttonsHtml += `
+            <button type="button" class="open-safari-btn" style="background: #007aff; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;">
+              🧭 Open in Safari
+            </button>
+          `;
+        }
+        buttonsHtml += '</div>';
+      }
+      
       alertDiv.innerHTML = `
         <strong>⚠️ In-App Browser Detected</strong><br>
         You are viewing this in ${browserName}'s in-app browser.
         For the best experience, please open this page in your system browser.
+        ${buttonsHtml}
       `;
+      
+      // Add event listeners for buttons
+      const chromeBtn = alertDiv.querySelector('.open-chrome-btn');
+      if (chromeBtn) {
+        chromeBtn.addEventListener('click', () => {
+          BrowserOpener.openInChrome();
+        });
+      }
+      
+      const safariBtn = alertDiv.querySelector('.open-safari-btn');
+      if (safariBtn) {
+        safariBtn.addEventListener('click', () => {
+          BrowserOpener.openInSafari();
+        });
+      }
     } else {
       const alertDiv = document.getElementById('alert');
       alertDiv.className = 'alert alert-success';
