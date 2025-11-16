@@ -5,12 +5,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>In-App Browser Detection</title>
-
+  <style>
+    body {
+      margin: 0;
+      padding: 1em;
+    }
+    .content {
+      padding-top: 0;
+      transition: padding-top 0.3s ease;
+    }
+    .content.has-banner {
+      padding-top: 120px; /* Space for the banner */
+    }
+  </style>
 </head>
 
 <body>
-  <div class="content">
-    <div class="feature-card">
+  <div class="content" id="main-content" style="margin-top: 7em;">
+    <div class="feature-card" style="margin-top: 1em;">
       <h2>🔧 Detection Information</h2>
       <p><strong>Browser Detection:</strong> <span id="detection-status">Detecting...</span></p>
       <p><strong>User Agent:</strong> <span id="user-agent" style="word-break: break-all; font-size: 12px;"></span>
@@ -19,7 +31,7 @@
           UA</button>
       </p>
 
-      <div style="margin-top: 14px; font-size: 12px; line-height: 1.6;">
+      <div style="margin-top: 14px; font-size: 12px; line-height: 1.6; margin-top: 1em;">
         <p><strong>outerWidth / innerWidth:</strong> <span id="ow">-</span> / <span id="iw">-</span></p>
         <p><strong>outerHeight / innerHeight:</strong> <span id="oh">-</span> / <span id="ih">-</span></p>
         <p><strong>navigator.share exists:</strong> <span id="share-exists">-</span></p>
@@ -68,18 +80,25 @@
 
           banner.innerHTML = `
             <div style="display:flex;flex-direction:column;gap:12px;">
-              <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
-                <span>⚠️ You're viewing this in ${browserName}'s in-app browser.</span>
+              <div style="display:flex;align-items:center;justify-content:center;gap:12px;text-align:center;">
+                <span style="font-weight:600;font-size:15px;">⚠️ Important: Open in Your Phone's Default Browser</span>
               </div>
-            <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
-              
-              <a href="${window.location.href}" class="native-open-link" style="background: #34c759; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
-                <span>🔗</span> Long Press To Open in Chrome
-              </a>
-              if you not open in chrome, for email otp you need to go back to gmail so then you will lost your session and you need to start again from intial.
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
+                <a href="${window.location.href}" class="native-open-link" style="background: #34c759; border: none; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size:15px;">
+                  <span>🔗</span> Long Press To Open in Phone's Default Browser
+                </a>
+                <p style="margin:0;font-size:13px;line-height:1.5;text-align:center;padding:0 10px;opacity:0.95;">
+                  If you don't open in your default browser, you'll need to go back to Gmail for email OTP verification. This will cause you to lose your session and you'll need to start again from the beginning.
+                </p>
+              </div>
             </div>
-          </div>
-        `;
+          `;
+          
+          // Add padding to content to prevent hiding behind banner
+          const mainContent = document.getElementById('main-content');
+          if (mainContent) {
+            mainContent.classList.add('has-banner');
+          }
 
         const chromeBtn = banner.querySelector('.open-chrome-btn');
         if (chromeBtn) {
@@ -102,6 +121,11 @@
       // Ensure banner is removed in regular browsers
       const existingBanner = document.querySelector('.in-app-warning');
       if (existingBanner) existingBanner.remove();
+      // Remove padding when banner is removed
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        mainContent.classList.remove('has-banner');
+      }
     }
 
     // Update user agent
