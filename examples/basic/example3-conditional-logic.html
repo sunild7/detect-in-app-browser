@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Example 3: Conditional Logic</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "bowser": "https://cdn.jsdelivr.net/npm/bowser@2.12.1/src/bowser.js"
+      }
+    }
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -77,14 +84,16 @@
   <div id="features"></div>
 
   <script type="module">
-    import { InAppBrowserDetector, PlatformUtils, BrowserOpener } from '../../dist/index.js';
+    import { InAppBrowserDetector } from '../../dist/index.js';
 
     const isInApp = InAppBrowserDetector.detectInAppBrowser();
-    const browserName = InAppBrowserDetector.getBrowserName();
-    const isMobile = PlatformUtils.isMobile();
-    const os = PlatformUtils.getOS();
-    const osVersion = PlatformUtils.getOSVersion();
-    const browserVersion = PlatformUtils.getBrowserVersion();
+    const environment = InAppBrowserDetector.getEnvironmentInfo();
+    const browserName = environment.browserName;
+    const os = environment.osName;
+    const osVersion = environment.osVersion;
+    const browserVersion = environment.browserVersion;
+    const platformType = environment.platformType;
+    const isMobile = platformType === 'mobile' || platformType === 'tablet';
 
     // Update detection status
     const statusElement = document.getElementById('detection-status');
@@ -153,11 +162,11 @@
     
     // Conditional feature availability
     const features = {
-      'Advanced Features': !isInApp, // Disable in in-app browsers
-      'File Downloads': !isInApp, // May not work in in-app browsers
-      'Push Notifications': !isInApp && isMobile, // Only in regular browsers on mobile
-      'Offline Mode': !isInApp, // Better in regular browsers
-      'Basic Features': true, // Always available
+      'Advanced Features': !isInApp,
+      'File Downloads': !isInApp,
+      'Push Notifications': !isInApp && isMobile,
+      'Offline Mode': !isInApp,
+      'Basic Features': true,
     };
 
     const featuresDiv = document.getElementById('features');
@@ -171,51 +180,15 @@
       `;
     }
     
-    // Add browser opening buttons if in-app browser is detected
     if (isInApp) {
-      const isChromeAvailable = BrowserOpener.isChromeAvailable();
-      const isSafariAvailable = BrowserOpener.isSafariAvailable();
-      
-      if (isChromeAvailable || isSafariAvailable) {
-        html += '<div class="feature feature-disabled" style="margin-top: 20px; padding: 20px;">';
-        html += '<strong>💡 Tip:</strong> Open this page in your system browser for the best experience.<br>';
-        html += '<div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">';
-        if (isChromeAvailable) {
-          html += `
-            <button type="button" class="open-chrome-btn" style="background: #4285f4; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;">
-              🌐 Open in Chrome
-            </button>
-          `;
-        }
-        if (isSafariAvailable) {
-          html += `
-            <button type="button" class="open-safari-btn" style="background: #007aff; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;">
-              🧭 Open in Safari
-            </button>
-          `;
-        }
-        html += '</div></div>';
-      }
+      html += `
+        <div class="feature feature-disabled" style="margin-top: 20px; padding: 20px;">
+          <strong>💡 Tip:</strong> Open this page in your default browser for the best experience.
+        </div>
+      `;
     }
     
     featuresDiv.innerHTML = html;
-    
-    // Add event listeners for browser buttons
-    if (isInApp) {
-      const chromeBtn = featuresDiv.querySelector('.open-chrome-btn');
-      if (chromeBtn) {
-        chromeBtn.addEventListener('click', () => {
-          BrowserOpener.openInChrome();
-        });
-      }
-      
-      const safariBtn = featuresDiv.querySelector('.open-safari-btn');
-      if (safariBtn) {
-        safariBtn.addEventListener('click', () => {
-          BrowserOpener.openInSafari();
-        });
-      }
-    }
   </script>
 </body>
 </html>

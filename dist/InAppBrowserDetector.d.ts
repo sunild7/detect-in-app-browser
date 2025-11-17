@@ -5,53 +5,26 @@
  * @version 1.0.0
  * @license MIT
  */
-import type { BrowserName } from './types.js';
+import type { BrowserName, EnvironmentInfo } from './types.js';
 export declare class InAppBrowserDetector {
     /**
-     * Main detection method
-     * Detects if the current browser is an in-app browser (WebView)
-     *
-     * @returns {boolean} True if in-app browser is detected, false otherwise
-     *
-     * @example
-     * ```typescript
-     * const isInApp = InAppBrowserDetector.detectInAppBrowser();
-     * if (isInApp) {
-     *   console.log('User is in an in-app browser');
-     * }
-     * ```
+     * Detect if the current context is an in-app browser.
      */
-    static detectInAppBrowser(): boolean;
+    static detectInAppBrowser(userAgentOverride?: string, referrerOverride?: string): boolean;
     /**
-     * Detect Gmail App specifically
-     *
-     * @returns {boolean} True if Gmail app browser is detected
+     * Convenience helper to expose browser/environment information parsed via Bowser.
      */
-    static detectGmailApp(): boolean;
+    static getEnvironmentInfo(userAgentOverride?: string): EnvironmentInfo;
     /**
-     * Detect WebView indicators from a user agent string
-     *
-     * @param {string} userAgent - Lowercase user agent string
-     * @returns {boolean} True if WebView is detected
+     * Get the browser name by delegating to Bowser.
      */
-    static detectWebView(userAgent: string): boolean;
+    static getBrowserName(userAgentOverride?: string): BrowserName;
     /**
-     * Get the browser name
-     *
-     * @returns {BrowserName} Browser name
-     *
-     * @example
-     * ```typescript
-     * const browserName = InAppBrowserDetector.getBrowserName();
-     * console.log('Browser:', browserName);
-     * ```
-     */
-    static getBrowserName(): BrowserName;
-    /**
-     * Get the current page URL
-     *
-     * @returns {string} Current page URL
+     * Get the current page URL.
      */
     static getCurrentPageUrl(): string;
+    private static getUserAgent;
+    private static getReferrer;
+    private static hasKnownReferrer;
 }
 //# sourceMappingURL=InAppBrowserDetector.d.ts.map

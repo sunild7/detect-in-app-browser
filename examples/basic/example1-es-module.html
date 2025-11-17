@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Example 1: ES Module Usage</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "bowser": "https://cdn.jsdelivr.net/npm/bowser@2.12.1/src/bowser.js"
+      }
+    }
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -76,20 +83,18 @@
   <div id="results"></div>
 
   <script type="module">
-    // Import the library
-    import { InAppBrowserDetector, PlatformUtils } from '../../dist/index.js';
+    import { InAppBrowserDetector } from '../../dist/index.js';
 
-    // Detect if in-app browser
     const isInApp = InAppBrowserDetector.detectInAppBrowser();
-    const browserName = InAppBrowserDetector.getBrowserName();
-    
-    // Get platform information
-    const isMobile = PlatformUtils.isMobile();
-    const isAndroid = PlatformUtils.isAndroid();
-    const isIOS = PlatformUtils.isIOS();
-    const os = PlatformUtils.getOS();
-    const osVersion = PlatformUtils.getOSVersion();
-    const browserVersion = PlatformUtils.getBrowserVersion();
+    const environment = InAppBrowserDetector.getEnvironmentInfo();
+    const browserName = environment.browserName;
+    const os = environment.osName;
+    const osVersion = environment.osVersion;
+    const browserVersion = environment.browserVersion;
+    const platformType = environment.platformType;
+    const isMobile = platformType === 'mobile' || platformType === 'tablet';
+    const isAndroid = os.toLowerCase().includes('android');
+    const isIOS = os.toLowerCase().includes('ios');
 
     // Update detection status
     const statusElement = document.getElementById('detection-status');
@@ -162,8 +167,8 @@
     resultsDiv.innerHTML = `
       <div class="result">
         <h2>Additional Information</h2>
-        <p><strong>Device Type:</strong> ${isMobile ? 'Mobile' : 'Desktop'}</p>
-        <p><strong>Platform:</strong> ${isAndroid ? 'Android' : isIOS ? 'iOS' : 'Other'}</p>
+        <p><strong>Device Type:</strong> ${platformType}</p>
+        <p><strong>Platform:</strong> ${isAndroid ? 'Android' : isIOS ? 'iOS' : os}</p>
       </div>
       
       ${isInApp ? `

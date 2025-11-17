@@ -11,21 +11,15 @@
  */
 
 import { InAppBrowserDetector } from './InAppBrowserDetector.js';
-import { PlatformUtils } from './PlatformUtils.js';
-import { BrowserOpener } from './BrowserOpener.js';
 
 // Named exports
 export { InAppBrowserDetector } from './InAppBrowserDetector.js';
-export { PlatformUtils } from './PlatformUtils.js';
-export { BrowserOpener } from './BrowserOpener.js';
 
 // Type exports
-export type { BrowserName, OSName, BraveNavigator, ReactNativeWebViewWindow } from './types.js';
+export type { BrowserName, OSName, EnvironmentInfo, PlatformType } from './types.js';
 
 // Default export for convenience
 export default {
   InAppBrowserDetector,
-  PlatformUtils,
-  BrowserOpener,
 };
 

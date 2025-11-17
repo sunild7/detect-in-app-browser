@@ -10,16 +10,10 @@
  * @license MIT
  */
 import { InAppBrowserDetector } from './InAppBrowserDetector.js';
-import { PlatformUtils } from './PlatformUtils.js';
-import { BrowserOpener } from './BrowserOpener.js';
 // Named exports
 export { InAppBrowserDetector } from './InAppBrowserDetector.js';
-export { PlatformUtils } from './PlatformUtils.js';
-export { BrowserOpener } from './BrowserOpener.js';
 // Default export for convenience
 export default {
     InAppBrowserDetector,
-    PlatformUtils,
-    BrowserOpener,
 };
 //# sourceMappingURL=index.js.map

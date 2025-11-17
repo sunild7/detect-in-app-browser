@@ -1,6 +1,6 @@
 # Usage Guide
 
-This guide shows you how to use the `detect-in-app-browser` library in your web applications.
+Learn how to get the most out of `detect-in-app-browser`.
 
 ## Installation
 
@@ -10,204 +10,126 @@ This guide shows you how to use the `detect-in-app-browser` library in your web 
 npm install detect-in-app-browser
 ```
 
-Then import in your code:
-
 ```javascript
-import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
+import { InAppBrowserDetector } from 'detect-in-app-browser';
 ```
 
 ### Option 2: Direct Download
 
-1. Copy the `dist/` folder (compiled files) into your project
-2. Import directly from it:
+1. Copy the `dist/` folder into your project.
+2. Import directly:
 
 ```javascript
-import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
+import { InAppBrowserDetector } from './dist/index.js';
 ```
 
-## Basic Usage
+> **Using plain `<script type="module">`?** Add an import map so browsers know where to fetch Bowser:
+>
+> ```html
+> <script type="importmap">
+>   {
+>     "imports": {
+>       "bowser": "https://cdn.jsdelivr.net/npm/bowser@2.12.1/src/bowser.js"
+>     }
+>   }
+> </script>
+> ```
 
-### 1. Detect In-App Browser
+## Core Patterns
+
+### Detect in-app browsers
 
 ```javascript
-import { InAppBrowserDetector } from 'detect-in-app-browser';
-
-// Simple detection
 if (InAppBrowserDetector.detectInAppBrowser()) {
-  console.log('In-app browser detected!');
-  // Show warning to user
-  alert('Please open in your system browser for better experience');
+  console.log('In-app browser detected');
 }
 ```
 
-### 2. Get Browser Name
+### Read environment info (Bowser result)
 
 ```javascript
-import { InAppBrowserDetector } from 'detect-in-app-browser';
+const environment = InAppBrowserDetector.getEnvironmentInfo();
 
-const browserName = InAppBrowserDetector.getBrowserName();
-console.log('Browser:', browserName); // 'Chrome', 'Safari', 'Facebook', 'Gmail', etc.
+console.table({
+  Browser: `${environment.browserName} ${environment.browserVersion}`,
+  OS: `${environment.osName} ${environment.osVersion}`,
+  Platform: environment.platformType,
+});
 ```
 
-### 3. Get Platform Information
+### Grab just the browser name
 
 ```javascript
-import { PlatformUtils } from 'detect-in-app-browser';
-
-// Check device type
-const isMobile = PlatformUtils.isMobile();
-const isAndroid = PlatformUtils.isAndroid();
-const isIOS = PlatformUtils.isIOS();
-
-// Get OS information
-const os = PlatformUtils.getOS(); // 'Android', 'iOS', 'Windows', etc.
-const osVersion = PlatformUtils.getOSVersion(); // '13.0', '18.7', etc.
-
-// Get browser version
-const browserVersion = PlatformUtils.getBrowserVersion();
+const browser = InAppBrowserDetector.getBrowserName();
 ```
 
 ## Real-World Examples
 
-### Example 1: Show Warning Banner (no CSS required)
+### 1. Warning banner (no CSS needed)
 
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My App</title>
-</head>
-<body>
-  <div id="warning-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#ff6b6b;color:#fff;padding:12px 16px;font:14px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;z-index:10000;">
-    ⚠️ You're viewing this in an in-app browser. Please open in your system browser for the best experience.
-  </div>
+<div id="iab-warning" style="display:none;position:fixed;top:0;left:0;right:0;background:#ff6b6b;color:#fff;padding:12px 16px;z-index:1000;">
+  ⚠️ In-app browser detected. Please open this page in your default browser.
+</div>
 
-  <script type="module">
-    import { InAppBrowserDetector } from './lib/index.js';
-    
-    if (InAppBrowserDetector.detectInAppBrowser()) {
-      document.getElementById('warning-banner').style.display = 'block';
-    }
-  </script>
-</body>
-</html>
-```
+<script type="module">
+  import { InAppBrowserDetector } from './dist/index.js';
 
-### Example 2: Conditional Feature Loading
-
-```javascript
-import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
-
-const isInApp = InAppBrowserDetector.detectInAppBrowser();
-const isMobile = PlatformUtils.isMobile();
-
-// Load features based on browser
-if (!isInApp) {
-  // Load advanced features only in regular browsers
-  loadAdvancedFeatures();
-}
-
-if (!isInApp && isMobile) {
-  // Enable push notifications only in regular mobile browsers
-  enablePushNotifications();
-}
-```
-
-### Example 3: Analytics Tracking
-
-```javascript
-import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
-
-// Track browser information
-const browserInfo = {
-  browser: InAppBrowserDetector.getBrowserName(),
-  browserVersion: PlatformUtils.getBrowserVersion(),
-  os: PlatformUtils.getOS(),
-  osVersion: PlatformUtils.getOSVersion(),
-  isInApp: InAppBrowserDetector.detectInAppBrowser(),
-  isMobile: PlatformUtils.isMobile(),
-};
-
-// Send to analytics
-analytics.track('page_view', browserInfo);
-```
-
-### Example 4: Show Different UI
-
-```javascript
-import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
-
-function initializeUI() {
-  const isInApp = InAppBrowserDetector.detectInAppBrowser();
-  const browserName = InAppBrowserDetector.getBrowserName();
-  
-  if (isInApp) {
-    // Show simplified UI for in-app browsers
-    showSimplifiedUI();
-    showOpenInBrowserButton();
-  } else {
-    // Show full UI for regular browsers
-    showFullUI();
+  if (InAppBrowserDetector.detectInAppBrowser()) {
+    document.getElementById('iab-warning').style.display = 'block';
   }
-}
-
-function showOpenInBrowserButton() {
-  const button = document.createElement('button');
-  button.textContent = 'Open in System Browser';
-  button.onclick = () => {
-    // Open current URL in system browser
-    window.open(window.location.href, '_system');
-  };
-  document.body.appendChild(button);
-}
+</script>
 ```
 
-### Example 5: React Component
+### 2. Feature gating
+
+```javascript
+const isInApp = InAppBrowserDetector.detectInAppBrowser();
+
+const features = {
+  downloads: !isInApp,
+  pushNotifications: !isInApp,
+  advancedEditor: !isInApp,
+};
+```
+
+### 3. Analytics payload
+
+```javascript
+const environment = InAppBrowserDetector.getEnvironmentInfo();
+
+sendAnalytics({
+  ...environment,
+  isInApp: InAppBrowserDetector.detectInAppBrowser(),
+});
+```
+
+### 4. React hook example
 
 ```jsx
-import React, { useEffect, useState } from 'react';
-import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
+import { useEffect, useState } from 'react';
+import { InAppBrowserDetector } from 'detect-in-app-browser';
 
-function App() {
-  const [isInApp, setIsInApp] = useState(false);
-  const [browserInfo, setBrowserInfo] = useState({});
+export function useInAppBrowser() {
+  const [state, setState] = useState({ isInApp: false, environment: null });
 
   useEffect(() => {
-    setIsInApp(InAppBrowserDetector.detectInAppBrowser());
-    setBrowserInfo({
-      browser: InAppBrowserDetector.getBrowserName(),
-      os: PlatformUtils.getOS(),
-      isMobile: PlatformUtils.isMobile(),
+    setState({
+      isInApp: InAppBrowserDetector.detectInAppBrowser(),
+      environment: InAppBrowserDetector.getEnvironmentInfo(),
     });
   }, []);
 
-  return (
-    <div>
-      {isInApp && (
-        <div className="warning-banner">
-          ⚠️ You're viewing this in an in-app browser. 
-          Please open in your system browser.
-        </div>
-      )}
-      <main>
-        {/* Your app content */}
-      </main>
-    </div>
-  );
+  return state;
 }
 ```
 
-### Example 6: Vue.js Component
+### 5. Vue component
 
 ```vue
 <template>
-  <div>
-    <div v-if="isInApp" class="warning-banner">
-      ⚠️ In-app browser detected. Please open in system browser.
-    </div>
-    <main>
-      <!-- Your app content -->
-    </main>
+  <div v-if="isInApp" class="warning-banner">
+    ⚠️ In-app browser detected.
   </div>
 </template>
 
@@ -223,27 +145,22 @@ onMounted(() => {
 </script>
 ```
 
-## API Reference
-
-See the main [README.md](./README.md) for complete API documentation.
-
 ## Tips
 
-1. **Always check for in-app browsers** before loading heavy features
-2. **Show warnings early** - detect as soon as the page loads
-3. **Provide alternatives** - offer users a way to open in system browser
-4. **Track analytics** - log in-app browser usage for insights
-5. **Test thoroughly** - test in actual in-app browsers (Facebook, Gmail, etc.)
+1. Detect immediately on page load so users see the warning right away.
+2. Pair detection with `document.referrer` logging for support tickets.
+3. Store the Bowser environment info for analytics or debugging.
+4. When in doubt, provide a manual “Open in browser” instruction.
 
 ## Browser Support
 
-- Modern browsers with ES6 module support
-- Chrome, Firefox, Safari, Edge (latest versions)
-- Mobile browsers (iOS Safari, Chrome Mobile, etc.)
+- Any modern browser with ES modules
+- Mobile Chrome/Safari/WebView on Android & iOS
+- Works in Node ≥ 16 for SSR/testing (pass a user-agent string manually)
 
 ## Need Help?
 
-- Check the [examples](./examples/basic/) directory
-- See the [README.md](./README.md) for API reference
-- Open an issue on [GitHub](https://github.com/sunild7/detect-in-app-browser/issues)
+- Explore the [examples](./examples/basic/) folder
+- Read the [README.md](./README.md) for the full API
+- File an issue on [GitHub](https://github.com/sunild7/detect-in-app-browser/issues)
 

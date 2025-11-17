@@ -42,10 +42,16 @@
     "url": "https://github.com/sunild7/detect-in-app-browser/issues"
   },
   "homepage": "https://github.com/sunild7/detect-in-app-browser#readme",
+  "dependencies": {
+    "bowser": "^2.12.1"
+  },
   "devDependencies": {
     "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "bowser": "^2.12.1"
   }
 }

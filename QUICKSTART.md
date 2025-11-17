@@ -13,14 +13,26 @@ Or download/copy the `dist/` folder (compiled files) directly into your project.
 ## Step 2: Import
 
 ```javascript
-import { InAppBrowserDetector, PlatformUtils } from 'detect-in-app-browser';
+import { InAppBrowserDetector } from 'detect-in-app-browser';
 ```
 
 Or if using local files:
 
 ```javascript
-import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
+import { InAppBrowserDetector } from './dist/index.js';
 ```
+
+> **Browser-only setup:** when you load `dist/index.js` directly in the browser (without a bundler), add an import map so the `bowser` dependency can be resolved:
+>
+> ```html
+> <script type="importmap">
+>   {
+>     "imports": {
+>       "bowser": "https://cdn.jsdelivr.net/npm/bowser@2.12.1/src/bowser.js"
+>     }
+>   }
+> </script>
+> ```
 
 ## Step 3: Use
 
@@ -42,9 +54,8 @@ console.log('Browser:', browserName);
 ### Get Platform Info
 
 ```javascript
-const isMobile = PlatformUtils.isMobile();
-const os = PlatformUtils.getOS();
-const osVersion = PlatformUtils.getOSVersion();
+const environment = InAppBrowserDetector.getEnvironmentInfo();
+console.log(environment.osName, environment.browserName);
 ```
 
 ## Complete Example (no CSS required)
@@ -62,29 +73,23 @@ const osVersion = PlatformUtils.getOSVersion();
   <div id="status"></div>
 
   <script type="module">
-    import { InAppBrowserDetector, PlatformUtils } from './dist/index.js';
+    import { InAppBrowserDetector } from './dist/index.js';
     
-    // Detect in-app browser
     const isInApp = InAppBrowserDetector.detectInAppBrowser();
-    const browserName = InAppBrowserDetector.getBrowserName();
+    const environment = InAppBrowserDetector.getEnvironmentInfo();
     
-    // Get platform info
-    const os = PlatformUtils.getOS();
-    const isMobile = PlatformUtils.isMobile();
-    
-    // Display status
     const statusDiv = document.getElementById('status');
     if (isInApp) {
       statusDiv.innerHTML = `
         <div style="background: #fff3cd; padding: 15px; border-radius: 5px;">
-          ⚠️ You're viewing this in ${browserName}'s in-app browser.
+          ⚠️ You're viewing this in ${environment.browserName}'s in-app browser.
           Please open in your system browser for the best experience.
         </div>
       `;
     } else {
       statusDiv.innerHTML = `
         <div style="background: #d4edda; padding: 15px; border-radius: 5px;">
-          ✓ Regular browser detected (${browserName} on ${os})
+          ✓ Regular browser detected (${environment.browserName} on ${environment.osName})
         </div>
       `;
     }
