@@ -2,6 +2,8 @@
 
 A tiny TypeScript/JavaScript helper that tells you if visitors are stuck inside an in-app browser (WebView) and nudges them to open your site in a real browser. User‑agent parsing is handled by the battle-tested [`bowser`](https://www.npmjs.com/package/bowser) package—no fragile regexes to maintain.
 
+> 📖 **For complete documentation**, including detailed explanations of how detection works, supported email providers, troubleshooting, and more examples, see [DOCUMENTATION.md](./DOCUMENTATION.md).
+
 ## Installation
 
 ### NPM

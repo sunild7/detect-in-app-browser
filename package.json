@@ -9,6 +9,7 @@
   "files": [
     "dist",
     "README.md",
+    "DOCUMENTATION.md",
     "LICENSE"
   ],
   "scripts": {
@@ -50,8 +51,5 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  },
-  "dependencies": {
-    "bowser": "^2.12.1"
   }
 }
