@@ -63,7 +63,6 @@ This library helps you:
 2. **Prompt** users to open the link in their default browser
 3. **Improve** user experience by guiding them to the best browsing experience
 4. **Prevent** session loss and authentication issues
-5. **Track** analytics about in-app browser usage
 
 ### Key Benefits
 
@@ -159,40 +158,6 @@ The library uses [Bowser](https://www.npmjs.com/package/bowser) to determine the
 
 **Why This Helps:**
 This prevents false positives on desktop browsers, which don't have in-app browsers in the same way.
-
----
-
-## Installation
-
-### Option 1: NPM (Recommended)
-
-```bash
-npm install detect-in-app-browser
-```
-
-### Option 2: Direct Download
-
-1. Download or clone this repository
-2. Copy the `dist/` directory to your project
-3. Import from the local path
-
-### Option 3: CDN (For Browser Use)
-
-When using directly in the browser without a bundler, you need to provide an import map:
-
-```html
-<script type="importmap">
-  {
-    "imports": {
-      "bowser": "https://cdn.jsdelivr.net/npm/bowser@2.12.1/src/bowser.js"
-    }
-  }
-</script>
-<script type="module">
-  import { InAppBrowserDetector } from './dist/index.js';
-  // Your code here
-</script>
-```
 
 ---
 
@@ -663,31 +628,3 @@ if (isInApp && (environment.osName === 'iOS' || environment.osName === 'iPadOS')
 3. Consider using `userAgentOverride` for testing
 
 ---
-
-## Contributing
-
-Found a new email provider that should be detected? Open an issue or pull request!
-
-1. Fork the repository
-2. Add the email provider to the detection lists
-3. Test with real user agents
-4. Submit a pull request
-
----
-
-## License
-
-MIT License - see [LICENSE](./LICENSE) file for details.
-
----
-
-## Support
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/sunild7/detect-in-app-browser/issues)
-- **Documentation**: This file and [README.md](./README.md)
-- **Examples**: See `examples/basic/` directory
-
----
-
-**Last Updated**: 2024
-
