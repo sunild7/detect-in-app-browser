@@ -158,6 +158,7 @@
           }
 
           parts.push('end');
+          console.log("intent url: ", parts.join(';'));
           return parts.join(';');
         } catch (e) {
           console.warn('Failed to build intent URL', e);
@@ -233,6 +234,7 @@
           document.body.removeChild(ta);
         }
       });
+      console.log("Normal HTTPS link as a fallback url: ", url);
     })();
   </script>
 </body>
