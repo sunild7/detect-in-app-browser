@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open in External Browser (Android Options)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f7fb;
+      color: #111827;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      line-height: 1.5;
+      margin: 0.4rem 0 0.6rem;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px 18px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      border-left: 4px solid #6366f1;
+      margin-top: 18px;
+    }
+    .url-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #f3f4ff;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      word-break: break-all;
+      border: 1px dashed #c7d2fe;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    button, a.btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+      background: #111827;
+      color: #ffffff;
+    }
+    button.primary {
+      background: #16a34a;
+    }
+    button.chrome {
+      background: #2563eb;
+    }
+    button.neutral, a.btn-link.neutral {
+      background: #e5e7eb;
+      color: #111827;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+    button:active, a.btn-link:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+    }
+    small {
+      display: block;
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .hint {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+    .hint strong {
+      font-weight: 600;
+    }
+    .row-note {
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <h1>Open This Page in Android Browser Apps</h1>
+  <p>
+    Use the buttons below (on Android) to open the <strong>same URL</strong> in Chrome or another external browser.
+    These are especially useful when you’re currently inside an in-app browser (e.g. Gmail, WhatsApp).
+  </p>
+
+  <div class="card">
+    <strong>Current URL</strong>
+    <div id="current-url" class="url-box">Loading current URL…</div>
+
+    <div class="buttons">
+      <button id="open-chrome-intent" class="chrome">
+        <span>🌐 Open in Chrome (Android Intent)</span>
+      </button>
+
+      <button id="open-chooser-intent" class="primary">
+        <span>📱 Open in Any Browser (Android chooser)</span>
+      </button>
+
+      <a id="open-normal-link" class="btn-link neutral" href="#">
+        <span>🔗 Open with Normal Link (fallback)</span>
+      </a>
+
+      <button id="copy-url" class="neutral">
+        <span>📋 Copy URL</span>
+      </button>
+    </div>
+
+    <div class="hint">
+      <strong>Tips:</strong>
+      <ul style="margin: 6px 0 0 18px; padding: 0;">
+        <li class="row-note">If a button doesn’t work in your in-app browser, long-press the “Normal Link” button and choose “Open in Chrome”.</li>
+        <li class="row-note">Intent links only work on Android; on other platforms they’ll usually be ignored.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var url = window.location.href;
+      var urlBox = document.getElementById('current-url');
+      urlBox.textContent = url;
+
+      function buildIntentUrl(targetUrl, opts) {
+        try {
+          var u = new URL(targetUrl);
+          var scheme = u.protocol.replace(':', '');
+          var rest = targetUrl.replace(scheme + '://', '');
+          var parts = ['intent://' + rest + '#Intent', 'scheme=' + scheme];
+
+          if (opts && opts.action) {
+            parts.push('action=' + opts.action);
+          }
+          if (opts && opts.packageName) {
+            parts.push('package=' + opts.packageName);
+          }
+          if (opts && opts.flags) {
+            parts.push('flags=' + opts.flags);
+          }
+
+          parts.push('end');
+          return parts.join(';');
+        } catch (e) {
+          console.warn('Failed to build intent URL', e);
+          return targetUrl;
+        }
+      }
+
+      // Chrome-only intent
+      document.getElementById('open-chrome-intent').addEventListener('click', function () {
+        var intentUrl = buildIntentUrl(url, {
+          packageName: 'com.android.chrome'
+        });
+        window.location.href = intentUrl;
+      });
+
+      // Generic chooser intent (no specific package)
+      document.getElementById('open-chooser-intent').addEventListener('click', function () {
+        var intentUrl = buildIntentUrl(url, {
+          action: 'android.intent.action.VIEW'
+        });
+        window.location.href = intentUrl;
+      });
+
+      // Normal HTTPS link as a fallback
+      var normalLink = document.getElementById('open-normal-link');
+      normalLink.href = url;
+      normalLink.target = '_blank';
+
+      // Copy URL to clipboard
+      var copyBtn = document.getElementById('copy-url');
+      copyBtn.addEventListener('click', function () {
+        var toCopy = url;
+
+        function onSuccess() {
+          var original = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          setTimeout(function () {
+            copyBtn.textContent = original;
+          }, 1600);
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(toCopy).then(onSuccess).catch(function () {
+            // Fallback
+            var ta = document.createElement('textarea');
+            ta.value = toCopy;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              document.execCommand('copy');
+              onSuccess();
+            } catch (e) {
+              alert('Copy this URL:\n' + toCopy);
+            }
+            document.body.removeChild(ta);
+          });
+        } else {
+          // Legacy fallback
+          var ta = document.createElement('textarea');
+          ta.value = toCopy;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            onSuccess();
+          } catch (e) {
+            alert('Copy this URL:\n' + toCopy);
+          }
+          document.body.removeChild(ta);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
+
+
