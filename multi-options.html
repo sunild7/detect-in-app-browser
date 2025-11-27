@@ -124,6 +124,10 @@
         <span>🚀 Open in Chrome (window.open with _top)</span>
       </button>
 
+      <button id="open-chrome-window-cmd" class="chrome">
+        <span>🚀 Open in Chrome (window.open with command)</span>
+      </button>
+
       <button id="open-chooser-intent" class="primary">
         <span>📱 Open in Any Browser (Android chooser)</span>
       </button>
@@ -208,6 +212,11 @@
           packageName: 'com.android.chrome'
         });
         window.open(intentUrl, '_top');
+      });
+
+      // Chrome intent using window.open with command
+      document.getElementById('open-chrome-window-cmd').addEventListener('click', function () {
+        window.open("intent://https://sunild7.github.io/detect-in-app-browser/multi-options.html#Intent;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;scheme=https;end", '_blank');
       });
 
       // Generic chooser intent (no specific package)
