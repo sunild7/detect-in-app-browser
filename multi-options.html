@@ -116,6 +116,14 @@
         <span>🚀 Open in Chrome (window.open with Intent)</span>
       </button>
 
+      <button id="open-chrome-window-parent" class="chrome">
+        <span>🚀 Open in Chrome (window.open with _parent)</span>
+      </button>
+
+      <button id="open-chrome-window-top" class="chrome">
+        <span>🚀 Open in Chrome (window.open with _top)</span>
+      </button>
+
       <button id="open-chooser-intent" class="primary">
         <span>📱 Open in Any Browser (Android chooser)</span>
       </button>
@@ -184,6 +192,22 @@
           packageName: 'com.android.chrome'
         });
         window.open(intentUrl, '_blank');
+      });
+
+      // Chrome intent using window.open with _parent
+      document.getElementById('open-chrome-window-parent').addEventListener('click', function () {
+        var intentUrl = buildIntentUrl(url, {
+          packageName: 'com.android.chrome'
+        });
+        window.open(intentUrl, '_parent');
+      });
+
+       // Chrome intent using window.open with _top
+       document.getElementById('open-chrome-window-top').addEventListener('click', function () {
+        var intentUrl = buildIntentUrl(url, {
+          packageName: 'com.android.chrome'
+        });
+        window.open(intentUrl, '_top');
       });
 
       // Generic chooser intent (no specific package)
