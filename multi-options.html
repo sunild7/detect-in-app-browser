@@ -112,6 +112,10 @@
         <span>🌐 Open in Chrome (Android Intent)</span>
       </button>
 
+      <button id="open-chrome-window-open" class="chrome">
+        <span>🚀 Open in Chrome (window.open with Intent)</span>
+      </button>
+
       <button id="open-chooser-intent" class="primary">
         <span>📱 Open in Any Browser (Android chooser)</span>
       </button>
@@ -172,6 +176,14 @@
           packageName: 'com.android.chrome'
         });
         window.location.href = intentUrl;
+      });
+
+      // Chrome intent using window.open
+      document.getElementById('open-chrome-window-open').addEventListener('click', function () {
+        var intentUrl = buildIntentUrl(url, {
+          packageName: 'com.android.chrome'
+        });
+        window.open(intentUrl, '_blank');
       });
 
       // Generic chooser intent (no specific package)
